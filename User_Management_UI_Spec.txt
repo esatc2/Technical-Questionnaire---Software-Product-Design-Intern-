@@ -1,0 +1,54 @@
+# UI Specs: User Management Screen
+
+## Overview
+Here are the UI requirements and expected behaviors for the User Management screen. This page lets admins view, filter, create, and edit system users all in one place. 
+
+## Default State on Load
+* **Data Grid:** Populates immediately with existing users fetched from the backend. 
+* **Filters:** The "Hide Disabled User" checkbox controls what is shown initially. (We will need to decide if we want this checked or unchecked by default based on business needs).
+* **Right Panel Form:** Defaults to "Create" mode. The header should say "New User," all input fields should be blank, and the "Enabled" checkbox is unchecked.
+* **Buttons:** Both the `+ New User` and `Save User` buttons are visible and active right away.
+
+## Layout & Components
+The screen is divided into a top action bar and a split-pane view below it: a data grid on the left and a details form on the right.
+
+### Top Action Bar
+* **`+ New User` button:** Top left, primary button style, includes a plus (`+`) icon.
+* **`Hide Disabled User` checkbox:** Top left, sits right next to the New User button.
+* **`Save User` button:** Top right, primary button style.
+
+### Left Panel: User Grid
+A standard table displaying the users.
+* **Columns:** ID, User Name, Email, and Enabled (shows as true/false).
+* **Headers:** Each column header needs a sort toggle (up/down arrows) and a filter icon (funnel) for column-specific searching.
+* **Row Selection:** Clicking anywhere on a row selects it. Selected rows need to be highlighted with a different background color so it is obvious which user is currently active.
+
+### Right Panel: User Form
+This form handles both creating new users and editing existing ones.
+* **Dynamic Header:** Reads "New User" when creating a user, or "Edit User: [Username]" when a row is selected.
+* **Input Fields:**
+    * **Username:** Text (alphanumeric only).
+    * **Display Name:** Text.
+    * **Phone:** Text.
+    * **Email:** Text (requires standard email formatting validation).
+    * **User Roles:** Dropdown. Let's stick to single-select for now. Options are `Guest`, `Admin`, and `SuperAdmin`.
+    * **Enabled:** Checkbox.
+
+## Interactions & Expected Behavior
+
+### Grid Interactions
+* **Sorting:** Clicking a column header's sort icon cycles the grid through Ascending, Descending, and Default sorting for that column.
+* **Filtering:** Clicking a funnel icon drops down a small text input to filter the grid by that specific column.
+* **Editing a User:** Clicking a row highlights it, changes the right panel's header to edit mode, and populates the form fields with that specific user's data.
+
+### Top Bar Interactions
+* **Clicking `+ New User`:** Clears any active row selection in the grid, empties all form fields, and resets the form header back to "New User".
+* **Toggling `Hide Disabled User`:** Checking this instantly hides anyone with an "Enabled" status of false. Unchecking it brings them back into the grid view.
+
+### Saving & Validation
+* **Dropdown:** Standard behavior—click to open the list, click an option to select it and close the menu.
+* **Clicking `Save User`:**
+    1. First, validate the form (check for required fields and proper email format).
+    2. If validation fails, outline the problem fields in red and show an error message.
+    3. If validation passes, fire off the API call (POST for a new user, PUT/PATCH for an edit).
+    4. On a successful save, show a brief success toast notification, refresh the grid so the new data appears, and reset the form.
